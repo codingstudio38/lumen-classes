@@ -44,10 +44,22 @@
 //4-> create folder config-> create file session.php
 //5-> 
  
+ 
+//excel export 
+//https://docs.laravel-excel.com/3.1/getting-started/installation.html
+//https://www.youtube.com/watch?v=xuqBZYTvAVg
+//composer require maatwebsite/excel
+//php artisan make:export OrdersExport 
+
+//import excel
+//php artisan make:import UsersImport
 
 $router->get('/', 'ExampleController@Myfirstfunction');
+$router->get('/all-products', [ 'as' => 'all-products', 'uses' => 'ExampleController@AllProducts']);
+$router->get('/export-all-products', [ 'as' => 'export-all-products', 'uses' => 'ExampleController@ExportAllProducts']);
+$router->post('/import-products', [ 'as' => 'import-products', 'uses' => 'ExampleController@ImportProducts']);
 $router->get('/session', 'ExampleController@mysessiondata');
-
+  
 $router->group(['prefix' => '/user','middleware' => 'MyMiddleware'], function () use ($router) {
     $router->get('/', 'ExampleController@HelloWorld');
     $router->get('/profile', 'ExampleController@HelloWorld');

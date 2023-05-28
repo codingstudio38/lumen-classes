@@ -8,12 +8,15 @@ use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\JWTAuth;
 use App\User;
 use App\Models\OrdersModel;
+use Excel;
+use App\Exports\OrdersExport;
+use App\Imports\ProductImport;
 
 class ExampleController extends Controller
 {
     /**
      * Create a new controller instance.
-     *
+     * 
      * @return void
      */
     /**
@@ -33,11 +36,11 @@ class ExampleController extends Controller
             'password' => 'required',
         ]);
 
-        try {
+        try { 
 
             $token = $this->jwt->attempt($request->only('email', 'password'));
              if (!$token ) {
-                 return response()->json(['user_not_found'], 404);
+                 return response()->json(['user_not_found'], 401);
              }
 
         } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
@@ -102,7 +105,79 @@ class ExampleController extends Controller
    {
     $users = User::all();
     return $users;
-   } 
+   }  
+
+public function AllProducts(Request $request)
+{
+   try {
+        $list = OrdersModel::orderBy('id','desc')->paginate(10);
+        $data= array('list'=>$list);
+        return view('produccts-list',$data);
+   } catch (\Throwable $th) {
+     echo $th->getMessage(); 
+   }
+} 
+ 
+ 
+public function ExportAllProducts(Request $request)
+{ 
+   try {
+        $list = OrdersModel::orderBy('id','desc')->get();
+        $data= array('list'=>$list);
+        ob_end_clean(); 
+        ob_start(); 
+        return Excel::download(new OrdersExport($data),"all-products".rand(999,100).".xlsx",\Maatwebsite\Excel\Excel::XLSX);
+   } catch (\Throwable $th) {
+     echo $th->getMessage(); 
+   }
+} 
+
+
+public function ImportProducts(Request $request)
+{
+    try {
+        $insert = array();
+    if($request->hasFile('import_file')){
+
+        $path = $request->file('import_file')->getRealPath();
+        $data = Excel::toArray([],  $request->file('import_file'));
+        // $data = Excel::import(new ProductImport,  $request->file('import_file'));
+        echo "<pre>";
+        print_r($data);exit;
+        // if(!empty($data) && $data->count()){
+
+        //     foreach ($data->toArray() as $key => $value) {
+
+        //         if(!empty($value)){
+
+        //             foreach ($value as $v) {        
+
+        //                 $row= [
+        //                     'ID' => $v['ID'], 
+        //                     'PRODUCT NAME' => $v['PRODUCT NAME'],
+        //                     'QUANTITY' => $v['QUANTITY'],
+        //                     'CREATED AT' => $v['CREATED AT'],
+        //                     'UPDATED AT' => $v['UPDATED AT'],
+        //                 ];
+        //                 array_push($insert,$row);
+        //             }
+        //         }
+        //     }
+
+        //     if(count($insert) > 0){
+        //         echo "<pre>";
+        //         print_r($insert);
+        //         echo "<pre>";
+        //     } else {
+        //        echo "nothing for import."; 
+        //     }
+        // }
+    }
+    return redirect(route('all-products'))->with('error','Please Check your file, Something is wrong there.');
+   } catch (\Throwable $th) {
+     echo $th->getMessage(); 
+   }
+}
 
 
 

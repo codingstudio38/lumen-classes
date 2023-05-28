@@ -95,6 +95,8 @@ $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+$app->register(Maatwebsite\Excel\ExcelServiceProvider::class);
+class_alias(Maatwebsite\Excel\Facades\Excel::class,'Excel');
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
@@ -127,4 +129,6 @@ $app->singleton(Illuminate\Session\SessionManager::class, function () use ($app)
 $app->singleton('session.store', function () use ($app) {
     return $app->loadComponent('session', Illuminate\Session\SessionServiceProvider::class, 'session.store');
 });
+
+
 return $app;
