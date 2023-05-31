@@ -111,7 +111,11 @@ public function AllProducts(Request $request)
 {
    try {
         $list = OrdersModel::orderBy('id','desc')->paginate(10);
-        $data= array('list'=>$list);
+        // echo "<pre>";
+        // print_r(glob(__DIR__.'/*.php'));
+        // echo "</pre>";
+        //  echo checkdatatype($list);
+        $data= array('list'=>$list); 
         return view('produccts-list',$data);
    } catch (\Throwable $th) {
      echo $th->getMessage(); 
