@@ -130,5 +130,8 @@ $app->singleton('session.store', function () use ($app) {
     return $app->loadComponent('session', Illuminate\Session\SessionServiceProvider::class, 'session.store');
 });
 
+$app->routeMiddleware([
+    'throttle' => App\Http\Middleware\ThrottleRequests::class,
+]);
 
 return $app;

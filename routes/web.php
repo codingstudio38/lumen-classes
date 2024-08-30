@@ -74,3 +74,6 @@ $router->group(['prefix' => '/','middleware' => 'auth'], function () use ($route
     $router->get('orders-list', 'OrdersController@list');
     $router->post('new-order', 'OrdersController@neworder');
 });
+$router->group(['middleware' => 'throttle:5,1'], function () use ($router) {
+     $router->get('test-throttle', 'OrdersController@Forthrottle');
+});

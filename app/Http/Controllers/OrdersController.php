@@ -43,6 +43,18 @@ public function neworder(Request $request){
         return response()->json($error, 400)->header('Content-Type', 'json');
     }
 }
-
+public function Forthrottle(Request $request){
+ try {
+  
+    $response = array(
+        'message'=>'success',
+        'status'=>200,
+    );
+    return response()->json($response, 200)->header('Content-Type', 'json');
+    } catch (\Throwable $th) {
+        $error = $th;
+        return response()->json($error, 400)->header('Content-Type', 'json');
+    }
+}
 
 }
